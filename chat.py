@@ -16,6 +16,10 @@ dotenv.load_dotenv()
 
 # COHERE_API_KEY = os.getenv("COHERE_API_KEY")
 REDIS_URL = os.getenv("REDIS_URL")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Make sure the path to the key file is correct
+key_path = os.path.join(current_dir, "../../../GOOGLE_APPLICATION_CREDENTIALS.json")
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
 
 
 def format_docs(docs):
