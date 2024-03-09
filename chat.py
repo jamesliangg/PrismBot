@@ -25,11 +25,10 @@ def format_docs(docs):
 
 def initialize_database():
     embedding = CohereEmbeddings()
-    redis_index = "hackHer"
     if os.path.isfile("vectorstore.pkl"):
         with open("vectorstore.pkl", "rb") as f:
-            schema, key_prefix = pickle.load(f)
-        vectorstore = Redis.from_existing_index(embedding=embedding, index_name=redis_index, schema=schema,
+            schema, key_prefix, index_name = pickle.load(f)
+        vectorstore = Redis.from_existing_index(embedding=embedding, index_name=index_name, schema=schema,
                                                 key_prefix=key_prefix, redis_url=REDIS_URL)
         print("Loaded existing vectorstore from file.")
     else:
@@ -39,7 +38,7 @@ def initialize_database():
         splits = text_splitter.split_documents(docs)
         vectorstore = Redis.from_documents(documents=splits, embedding=CohereEmbeddings(), redis_url=REDIS_URL)
         with open("vectorstore.pkl", "wb") as f:
-            pickle.dump([vectorstore.schema, vectorstore.key_prefix], f)
+            pickle.dump([vectorstore.schema, vectorstore.key_prefix, vectorstore.index_name], f)
         print("Created new vectorstore from file.")
     return vectorstore
 
@@ -47,6 +46,8 @@ def initialize_database():
 def rag_chain_invoke(vectorstore, question):
     retriever = vectorstore.as_retriever()
     prompt = hub.pull("rlm/rag-prompt")
+    # llm = Cohere(streaming=True, callbacks=[stream_handler])
+    # llm = Cohere(streaming=True)
     llm = Cohere()
 
     rag_chain_from_docs = (
@@ -60,6 +61,5 @@ def rag_chain_invoke(vectorstore, question):
     ).assign(answer=rag_chain_from_docs)
     return rag_chain_with_source.invoke(question)
 
-
-vectorstore = initialize_database()
-print(rag_chain_invoke(vectorstore, "What is the Gender-affirming care?"))
+# vectorstore = initialize_database()
+# print(rag_chain_invoke(vectorstore, "What is the Gender-affirming care?"))

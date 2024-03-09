@@ -11,3 +11,4 @@ https://python.langchain.com/docs/integrations/providers/cohere
 https://python.langchain.com/docs/use_cases/question_answering/quickstart
 https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.redis.base.Redis.html#
 https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf
+https://docs.streamlit.io/library/cheatsheet
