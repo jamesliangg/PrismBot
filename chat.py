@@ -9,6 +9,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.runnables import RunnableParallel
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_google_vertexai import VertexAI, VertexAIEmbeddings
+from google.auth import default
 # from langchain_community.llms import Cohere
 # from langchain_community.embeddings import CohereEmbeddings
 
@@ -16,10 +17,8 @@ dotenv.load_dotenv()
 
 # COHERE_API_KEY = os.getenv("COHERE_API_KEY")
 REDIS_URL = os.getenv("REDIS_URL")
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# Make sure the path to the key file is correct
-key_path = os.path.join(current_dir, "../../../GOOGLE_APPLICATION_CREDENTIALS.json")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
+# Cloud Run access service account connected to instance
+creds, project_id = default()
 
 
 def format_docs(docs):
