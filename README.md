@@ -15,3 +15,6 @@ https://docs.streamlit.io/library/cheatsheet
 
 https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm
 https://python.langchain.com/docs/integrations/text_embedding/google_vertex_ai_palm
+https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/overview
+https://cloud.google.com/blog/products/databases/memorystore-for-redis-vector-search-and-langchain-integration
+https://github.com/google-github-actions/example-workflows/blob/main/workflows/deploy-cloudrun/cloudrun-docker.yml
