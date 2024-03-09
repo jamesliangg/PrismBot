@@ -6,6 +6,11 @@ Connection URL = `redis://localhost:6379`
 
 Delete all keys in Redis DB `redis-cli flushall`
 
+`ngrok tcp 6379`
+`tcp://2.tcp.ngrok.io:17000` use `2.tcp.ngrok.io` as host and `17000` as port
+
+Redis url becomes `REDIS_URL=redis://2.tcp.ngrok.io:17000`
+
 https://python.langchain.com/docs/integrations/vectorstores/redis
 https://python.langchain.com/docs/integrations/providers/cohere
 https://python.langchain.com/docs/use_cases/question_answering/quickstart
