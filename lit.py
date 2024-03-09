@@ -17,13 +17,13 @@ class StreamHandler(BaseCallbackHandler):
 def format_response(input):
     output = ""
     output += input['answer']
-    output += "\n\n Sources: \n\n"
+    output += "\n\n Sources: \n"
     # Extract sources and pages
     sources_pages = [(doc.metadata['source'], doc.metadata['page']) for doc in input['context']]
 
     # Format and print
     for source, page in sources_pages:
-        output += f"{source} - Page {page} \n"
+        output += f"- {source} - Page {page} \n"
     return output
 
 
@@ -52,4 +52,4 @@ if prompt := st.chat_input():
     response = rag_chain_invoke(vectorstore, prompt)
     # print(response)
     formatted_response = format_response(response)
-    st.chat_message("assistant").write(formatted_response)
+    st.chat_message("assistant").markdown(formatted_response)
