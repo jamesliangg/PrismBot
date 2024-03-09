@@ -53,7 +53,6 @@ jobs:
           region: ${{ env.REGION }}
           image: docker.io/jamesliangg/hackher:${{ github.sha }}
           env_vars: |
-            GOOGLE_APPLICATION_CREDENTIALS=GOOGLE_APPLICATION_CREDENTIALS.json
             REDIS_URL=${{ secrets.REDIS_URL }}
 
       - name: Show Output
