@@ -1,4 +1,6 @@
 from langchain.callbacks.base import BaseCallbackHandler
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain.memory import ConversationBufferMemory
 from langchain.schema import ChatMessage
 import streamlit as st
 from chat import rag_chain_invoke, initialize_database
@@ -14,6 +16,26 @@ class StreamHandler(BaseCallbackHandler):
         self.container.markdown(self.text)
 
 
+# https://stackoverflow.com/questions/74003574/how-to-create-a-button-with-hyperlink-in-streamlit
+def redirect_button(url: str, text: str = None, color="#FD504D"):
+    st.markdown(
+        f"""
+    <a href="{url}" target="_self">
+        <div style="
+            display: inline-block;
+            padding: 0.5em 1em;
+            color: #FFFFFF;
+            background-color: {color};
+            border-radius: 3px;
+            text-decoration: none;">
+            {text}
+        </div>
+    </a>
+    """,
+        unsafe_allow_html=True
+    )
+
+
 def format_response(input):
     output = ""
     output += input['answer']
@@ -27,29 +49,32 @@ def format_response(input):
     return output
 
 
+st.set_page_config(page_title="hackHer", page_icon="🌸")
+
+redirect_button("https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/index.html","Take me to safety!")
+
 vectorstore = initialize_database()
 
-if "messages" not in st.session_state:
-    st.session_state["messages"] = [ChatMessage(role="assistant", content="How can I help you?")]
+msgs = StreamlitChatMessageHistory()
+memory = ConversationBufferMemory(
+    chat_memory=msgs, return_messages=True, memory_key="chat_history", output_key="output"
+)
 
-for msg in st.session_state.messages:
-    st.chat_message(msg.role).write(msg.content)
+if len(msgs.messages) == 0:
+    msgs.clear()
+    msgs.add_ai_message("How can I help you?")
+
+avatars = {"human": "🌷", "ai": "🌺"}
+for idx, msg in enumerate(msgs.messages):
+    with st.chat_message(avatars[msg.type]):
+        st.write(msg.content)
 
 if prompt := st.chat_input():
-    st.session_state.messages.append(ChatMessage(role="user", content=prompt))
-    st.chat_message("user").write(prompt)
+    st.chat_message("🌷").write(prompt)
+    msgs.add_user_message(prompt)
 
-    # with st.chat_message("assistant"):
-    #     # stream_handler = StreamHandler(st.empty())
-    #     # llm = ChatOpenAI(openai_api_key=openai_api_key, streaming=True, callbacks=[stream_handler])
-    #     # response = llm.invoke(st.session_state.messages)
-    #     # response = rag_chain_invoke(vectorstore, prompt, stream_handler)
-    #     response = rag_chain_invoke(vectorstore, prompt)
-    #     print(response)
-    #     formatted_response = format_response(response)
-    #     st.session_state.messages.append(ChatMessage(role="assistant", content=str(response)))
-    #     st.chat_message("assistant").write(formatted_response)
-    response = rag_chain_invoke(vectorstore, prompt)
-    # print(response)
-    formatted_response = format_response(response)
-    st.chat_message("assistant").markdown(formatted_response)
+    with st.chat_message("🌺"):
+        response = rag_chain_invoke(vectorstore, prompt)
+        formatted_response = format_response(response)
+        st.markdown(formatted_response)
+        msgs.add_ai_message(formatted_response)
