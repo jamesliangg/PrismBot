@@ -48,7 +48,10 @@ chmod +x process_links.sh
 
 ./process_links.sh
 ```
-
+## Document Sources
+- https://www.rainbowhealthontario.ca/
+- https://genderdysphoria.fyi/en
+- https://www.the519.org/about/
 ## References
 - https://python.langchain.com/docs/integrations/vectorstores/redis
 - https://python.langchain.com/docs/integrations/providers/cohere
