@@ -41,6 +41,13 @@ You'll also need to create a service account key for Google Cloud and save it as
 - Access the app at `http://localhost:8080`
 ## Useful Commands 
 Delete all keys in Redis DB `redis-cli flushall`
+### Bash Script to Import
+Run the following script in your terminal to import the data into Redis from resources.md
+```bash
+chmod +x process_links.sh
+
+./process_links.sh
+```
 
 ## References
 - https://python.langchain.com/docs/integrations/vectorstores/redis

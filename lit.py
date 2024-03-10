@@ -49,9 +49,12 @@ def format_response(input):
     return output
 
 
-st.set_page_config(page_title="hackHer", page_icon="🌸")
+st.set_page_config(page_title="PrismBot", page_icon="🌸")
 
-redirect_button("https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/index.html","Take me to safety!")
+with st.sidebar:
+    redirect_button(
+        "https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/index.html",
+        "Take me to safety!")
 
 vectorstore = initialize_database()
 

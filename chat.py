@@ -1,7 +1,10 @@
 import os
 import dotenv
 import pickle
+import argparse
+import bs4
 from langchain import hub
+from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores.redis import Redis
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
@@ -66,20 +69,51 @@ def rag_chain_invoke(vectorstore, question):
 
 
 def add_documents_web(vectorstore, url):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Windows; Windows x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/103.0.5060.114 Safari/537.36'}
-    loader = PyPDFLoader(
-        file_path=url,
-        headers=headers)
-    docs = loader.load()
+    is_pdf = is_pdf_url(url)
+    if is_pdf:
+        print("Parsing PDF")
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Windows; Windows x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/103.0.5060.114 Safari/537.36'}
+        loader = PyPDFLoader(
+            file_path=url,
+            headers=headers)
+        docs = loader.load()
+    else:
+        print("Parsing website")
+        docs = parse_website(url)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
     # vectorstore.add_documents(documents=splits, embedding=CohereEmbeddings(), redis_url=REDIS_URL)
-    vectorstore.add_documents(documents=splits, embedding=VertexAIEmbeddings(model_name="textembedding-gecko@001"), redis_url=REDIS_URL)
+    vectorstore.add_documents(documents=splits, embedding=VertexAIEmbeddings(model_name="textembedding-gecko@001"),
+                              redis_url=REDIS_URL)
+    print(url)
+    return "Successfully added documents to database."
+
+
+def parse_website(url):
+    loader = WebBaseLoader(
+        web_paths=(url,),
+        bs_kwargs=dict(
+            parse_only=bs4.SoupStrainer(
+                class_=("page-content", "page-title-bar", "title-header", "post-content")
+            )
+        ),
+    )
+    return loader.load()
+
+
+def is_pdf_url(url):
+    return url.lower().endswith('.pdf')
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser("add_to_database")
+    parser.add_argument("url", help="URL of document to add to database", type=str)
+    args = parser.parse_args()
     vectorstore = initialize_database()
-    add_documents_web(vectorstore, "https://www.rainbowhealthontario.ca/wp-content/uploads/2023/08/Ontario-HIV-Testing-Guidelines-for-Providers.pdf")
-    # print(rag_chain_invoke(vectorstore, "What is the Gender-affirming care?"))
+    add_documents_web(vectorstore, args.url)
+    # print(is_pdf_url(args.url))
+    # print(parse_website(args.url))
+    # print(args.url)
+    # add_documents_web(vectorstore, args.url)
