@@ -74,3 +74,6 @@ https://www.rainbowhealthontario.ca/wp-content/uploads/2022/03/Health-in-Focus-R
 https://www.rainbowhealthontario.ca/wp-content/uploads/2022/03/Gender-Affirming-Options-for-Gender-Independent-Children-and-Adolescents.pdf
 https://www.rainbowhealthontario.ca/wp-content/uploads/2022/03/About-Lesbian-Health-March2022.pdf
 https://www.rainbowhealthontario.ca/wp-content/uploads/2023/11/Posters-English-trans-and-carers.pdf
+https://www.the519.org/wp-content/uploads/PDF_Download/The519_Glossary_Feb2020.pdf
+https://www.the519.org/wp-content/uploads/PDF_Download/519_CASToolkit_ENG_AODA.pdf
+https://www.the519.org/resources/update-your-ontario-covid-19-vaccine-certificate-to-your-chosen-name/
